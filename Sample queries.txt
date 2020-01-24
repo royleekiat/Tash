@@ -1,0 +1,12 @@
+Sample queries
+
+query getOneDatapoint($dataid: String) {
+    datapoints(portfolio: $dataid) {
+    	period
+    }
+}
+
+
+{
+	"dataid": ""
+}
