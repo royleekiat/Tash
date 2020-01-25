@@ -7,17 +7,19 @@
   <style>
     body {
       font: 10px sans-serif;
+      background-color: #001630;
+      position: relative;
     }
     
     .axis path,
     .axis line {
       fill: none;
-      stroke: #000;
+      stroke: white;
       shape-rendering: crispEdges;
     }
     
     .x.axis path {
-      display: none;
+      stroke: white;
     }
     
     .line {
@@ -25,322 +27,409 @@
       stroke: steelblue;
       stroke-width: 1.5px;
     }
+    /* Dropdown Button */
+    .dropbtn {
+      background-color: #3498DB;
+      color: white;
+      padding: 16px;
+      font-size: 16px;
+      border: none;
+      cursor: pointer;
+      position: absolute;
+      top: -70px;
+      left: 900px;
+    }
+
+    /* Dropdown button on hover & focus */
+    .dropbtn:hover, .dropbtn:focus {
+      background-color: #2980B9;
+    }
+
+    /* The container <div> - needed to position the dropdown content */
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    /* Dropdown Content (Hidden by Default) */
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      top: -20px;
+      left: 900px;
+      background-color: #f1f1f1;
+      min-width: 160px;
+      box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+      z-index: 1;
+    }
+
+    /* Links inside the dropdown */
+    .dropdown-content a {
+      color: black;
+      padding: 12px 16px;
+      text-decoration: none;
+      display: block;
+    }
+
+    /* Change color of dropdown links on hover */
+    .dropdown-content a:hover {background-color: #ddd}
+
+    /* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
+    .show {display:block;}
+
+
+    
   </style>
+  <h1 style="color:white;">Portfolio Benchmark</h1>
+  <h2 style="color:grey;">Stashaway Risk Index 14% portfolio</h2>
+  <div class="dropdown">
+    <button onclick="myFunction()" class="dropbtn">Benchmark</button>
+    <div id="myDropdown" class="dropdown-content">
+      <a href="#" onclick= "compare('20% VTSMX (Stock) + 80% VBMFX (Bond)')">20% VTSMX (Stock) + 80% VBMFX (Bond)</a>
+      <a href="#" onclick= "compare('40% VTSMX (Stock) + 60% VBMFX (Bond)')">40% VTSMX (Stock) + 60% VBMFX (Bond)</a>
+      <a href="#" onclick= "compare('60% VTSMX (Stock) + 40% VBMFX (Bond)')">60% VTSMX (Stock) + 40% VBMFX (Bond)</a>
+    </div>
+  </div>
+  <h2 style="color:white;">Portfolio value based on gross returns</h2>
 </head>
 
 <body>
   <script>
-
-
-
-
-    var margin = {
-        top: 20,
-        right: 50,
-        bottom: 30,
-        left: 50
-      },
-      width = 900 - margin.left - margin.right,
-      height = 500 - margin.top - margin.bottom;
-
-    var parseDate = d3.time.format("%Y-%m-%d").parse;
-
-    var x = d3.time.scale()
-      .range([0, width]);
-
-    var y = d3.scale.linear()
-      .range([height, 0]);
-
-    var color = d3.scale.category10();
-
-    var xAxis = d3.svg.axis()
-      .scale(x)
-      .orient("bottom");
-
-    var yAxis = d3.svg.axis()
-      .scale(y)
-      .orient("left");
-
-    var line = d3.svg.line()
-      .interpolate("basis")
-      .x(function(d) {
-        return x(d.date);
-      })
-      .y(function(d) {
-        return y(d.temperature);
-      });
-
-    var svg = d3.select("body").append("svg")
-      .attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom)
-      .append("g")
-      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-    var settings = {
-      "url": "/graphql",
-      "method": "POST",
-      "timeout": 0,
-      "headers": {
-        "Content-Type": "application/json"
-      },
-      "data": JSON.stringify({
-        query: "query getOneDatapoint($dataid: String) {\r\n    datapoints(portfolio: $dataid) {\r\n    \tvalue\r\n    \tportfolio\r\n    \tid\r\n    \tperiod\r\n    }\r\n}",
-        variables: {"dataid":""} // "Stashaway Risk Index 14%"
-      })
-    };
-
-    $.ajax(settings).done(function (response) {
-      console.log(response);
     
-      var datapointsList = response.data.datapoints
+    
+      /* When the user clicks on the button,
+      toggle between hiding and showing the dropdown content */
+      function myFunction() {
+        document.getElementById("myDropdown").classList.toggle("show");
+      }
 
-    // var datapointsList = [
-    //     {
-    //         id: 1,
-    //         period: '2017-07-01',
-    //         value: 135555,
-    //         portfolio: 'Stashaway Risk Index 14%',
-    //     },
-    //     {
-    //         id: 2,
-    //         period: '2017-08-01',
-    //         value: 145235,
-    //         portfolio: 'Stashaway Risk Index 14%',
-    //     },
-    //     {
-    //         id: 3,
-    //         period: '2017-07-01',
-    //         value: 155235,
-    //         portfolio: '40% VTSMX (Stock) + 60% VBMFX (Bond)',
-    //     },
-    //     {
-    //         id: 4,
-    //         period: '2017-08-01',
-    //         value: 165235,
-    //         portfolio: '40% VTSMX (Stock) + 60% VBMFX (Bond)',
-    //     }
-    // ]
-
-      var datamap = {}
-
-      //sort by date
-      datapointsList.forEach(function(d) {
-        if (d.period in datamap){
-          datamap[d.period][d.portfolio] = d.value
+      // Close the dropdown menu if the user clicks outside of it
+      window.onclick = function(event) {
+        if (!event.target.matches('.dropbtn')) {
+          var dropdowns = document.getElementsByClassName("dropdown-content");
+          var i;
+          for (i = 0; i < dropdowns.length; i++) {
+            var openDropdown = dropdowns[i];
+            if (openDropdown.classList.contains('show')) {
+              openDropdown.classList.remove('show');
+            }
+          }
         }
-        else{ 
-          datamap[d.period] = {"date":parseDate(d.period), [d.portfolio]: d.value}
-        }
+      }
 
-        console.log (datamap)//[d.period])
+      function compare(benchmark){
+        d3.select("svg").remove();
+        var margin = {
+          top: 20,
+          right: 50,
+          bottom: 30,
+          left: 50
+        },
+        width = 1000 - margin.left - margin.right,
+        height = 500 - margin.top - margin.bottom;
 
-      });
+        var parseDate = d3.time.format("%Y-%m-%d").parse;
 
-      //transform into data suitable for this d3 graph
-      //data = []
+        var x = d3.time.scale()
+          .range([0, width]);
 
-      var data = Object.values(datamap)
+        var y = d3.scale.linear()
+          .range([height, 0]);
 
-      
+        var color = d3.scale.category10();
 
-      //console.log (data)
-      //console.log (datamap)
+        var xAxis = d3.svg.axis()
+          .scale(x)
+          .orient("bottom");
 
-      color.domain(d3.keys(data[0]).filter(function(key) {
-        return key !== "date";
-      }));
+        var yAxis = d3.svg.axis()
+          .scale(y)
+          .orient("left");
 
-
-
-      var cities = color.domain().map(function(name) {
-        return {
-          name: name,
-          values: data.map(function(d) {
-            return {
-              date: d.date,
-              temperature: +d[name]
-            };
+        var line = d3.svg.line()
+          .interpolate("basis")
+          .x(function(d) {
+            return x(d.date);
           })
+          .y(function(d) {
+            return y(d.temperature);
+          });
+
+        var svg = d3.select("body").append("svg")
+          .attr("width", width + margin.left + margin.right)
+          .attr("height", height + margin.top + margin.bottom)
+          .append("g")
+          .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+        var settings = {
+          "url": "/graphql",
+          "method": "POST",
+          "timeout": 0,
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "data": JSON.stringify({
+          query: "query getOneDatapoint($dataid: String, $dataid2: String) {\r\n    datapoints(portfolio: $dataid, benchmark: $dataid2 ) {\r\n    \tvalue\r\n    \tportfolio\r\n    \tid\r\n    \tperiod\r\n    }\r\n}",
+          variables: {"dataid":"Stashaway Risk Index 14%","dataid2":benchmark} // "Stashaway Risk Index 14%"
+        })
         };
-      });
 
-      x.domain(d3.extent(data, function(d) {
-        return d.date;
-      }));
-
-      y.domain([
-        d3.min(cities, function(c) {
-          return d3.min(c.values, function(v) {
-            return v.temperature;
-          });
-        }),
-        d3.max(cities, function(c) {
-          return d3.max(c.values, function(v) {
-            return v.temperature;
-          });
-        })
-      ]);
-
-      var legend = svg.selectAll('g')
-        .data(cities)
-        .enter()
-        .append('g')
-        .attr('class', 'legend');
-
-      legend.append('rect')
-        .attr('x', width - 20)
-        .attr('y', function(d, i) {
-          return i * 20;
-        })
-        .attr('width', 10)
-        .attr('height', 10)
-        .style('fill', function(d) {
-          return color(d.name);
-        });
-
-      legend.append('text')
-        .attr('x', width - 8)
-        .attr('y', function(d, i) {
-          return (i * 20) + 9;
-        })
-        .text(function(d) {
-          return d.name;
-        });
-
-      svg.append("g")
-        .attr("class", "x axis")
-        .attr("transform", "translate(0," + height + ")")
-        .call(xAxis);
-
-      svg.append("g")
-        .attr("class", "y axis")
-        .call(yAxis)
-        .append("text")
-        .attr("transform", "rotate(-90)")
-        .attr("y", 6)
-        .attr("dy", ".71em")
-        .style("text-anchor", "end")
-        .text("Value (SGD)");
-
-      var city = svg.selectAll(".city")
-        .data(cities)
-        .enter().append("g")
-        .attr("class", "city");
-
-      city.append("path")
-        .attr("class", "line")
-        .attr("d", function(d) {
-          return line(d.values);
-        })
-        .style("stroke", function(d) {
-          return color(d.name);
-        });
-
-      city.append("text")
-        .datum(function(d) {
-          return {
-            name: d.name,
-            value: d.values[d.values.length - 1]
-          };
-        })
-        .attr("transform", function(d) {
-          return "translate(" + x(d.value.date) + "," + y(d.value.temperature) + ")";
-        })
-        .attr("x", 3)
-        .attr("dy", ".35em")
-        .text(function(d) {
-          return d.name;
-        });
-
-      var mouseG = svg.append("g")
-        .attr("class", "mouse-over-effects");
-
-      mouseG.append("path") // this is the black vertical line to follow mouse
-        .attr("class", "mouse-line")
-        .style("stroke", "black")
-        .style("stroke-width", "1px")
-        .style("opacity", "0");
+        $.ajax(settings).done(function (response) {
+          console.log(response);
         
-      var lines = document.getElementsByClassName('line');
+          var datapointsList = response.data.datapoints
 
-      var mousePerLine = mouseG.selectAll('.mouse-per-line')
-        .data(cities)
-        .enter()
-        .append("g")
-        .attr("class", "mouse-per-line");
+          var datamap = {}
 
-      mousePerLine.append("circle")
-        .attr("r", 7)
-        .style("stroke", function(d) {
-          return color(d.name);
-        })
-        .style("fill", "none")
-        .style("stroke-width", "1px")
-        .style("opacity", "0");
+          //sort by date
+          datapointsList.forEach(function(d) {
+            if (d.period in datamap){
+              datamap[d.period][d.portfolio] = d.value
+            }
+            else{ 
+              datamap[d.period] = {"date":parseDate(d.period), [d.portfolio]: d.value}
+            }
 
-      mousePerLine.append("text")
-        .attr("transform", "translate(10,3)");
+            console.log (datamap)//[d.period])
 
-      mouseG.append('svg:rect') // append a rect to catch mouse movements on canvas
-        .attr('width', width) // can't catch mouse events on a g element
-        .attr('height', height)
-        .attr('fill', 'none')
-        .attr('pointer-events', 'all')
-        .on('mouseout', function() { // on mouse out hide line, circles and text
-          d3.select(".mouse-line")
-            .style("opacity", "0");
-          d3.selectAll(".mouse-per-line circle")
-            .style("opacity", "0");
-          d3.selectAll(".mouse-per-line text")
-            .style("opacity", "0");
-        })
-        .on('mouseover', function() { // on mouse in show line, circles and text
-          d3.select(".mouse-line")
-            .style("opacity", "1");
-          d3.selectAll(".mouse-per-line circle")
-            .style("opacity", "1");
-          d3.selectAll(".mouse-per-line text")
-            .style("opacity", "1");
-        })
-        .on('mousemove', function() { // mouse moving over canvas
-          var mouse = d3.mouse(this);
-          d3.select(".mouse-line")
-            .attr("d", function() {
-              var d = "M" + mouse[0] + "," + height;
-              d += " " + mouse[0] + "," + 0;
-              return d;
+          });
+
+          //transform into data suitable for this d3 graph
+          //data = []
+
+          var data = Object.values(datamap)
+
+          
+
+          //console.log (data)
+          //console.log (datamap)
+
+          color.domain(d3.keys(data[0]).filter(function(key) {
+            return key !== "date";
+          }));
+
+
+
+          var cities = color.domain().map(function(name) {
+            return {
+              name: name,
+              values: data.map(function(d) {
+                return {
+                  date: d.date,
+                  name: name,
+                  temperature: +d[name]
+                };
+              })
+            };
+          });
+
+          x.domain(d3.extent(data, function(d) {
+            return d.date;
+          }));
+
+          y.domain([
+            d3.min(cities, function(c) {
+              return d3.min(c.values, function(v) {
+                return v.temperature;
+              });
+            }),
+            d3.max(cities, function(c) {
+              return d3.max(c.values, function(v) {
+                return v.temperature;
+              });
+            })
+          ]);
+
+          var legend = svg.selectAll('g')
+            .data(cities)
+            .enter()
+            .append('g')
+            .attr('class', 'legend');
+
+          legend.append('rect')
+            .attr('x', width - 162)
+            .attr('y', function(d, i) {
+              return i * 20;
+            })
+            .attr('width', 10)
+            .attr('height', 10)
+            .style('fill', function(d) {
+              return color(d.name);
             });
 
-          d3.selectAll(".mouse-per-line")
-            .attr("transform", function(d, i) {
-              console.log(width/mouse[0])
-              var xDate = x.invert(mouse[0]),
-                  bisect = d3.bisector(function(d) { return d.date; }).right;
-                  idx = bisect(d.values, xDate);
-              
-              var beginning = 0,
-                  end = lines[i].getTotalLength(),
-                  target = null;
-
-              while (true){
-                target = Math.floor((beginning + end) / 2);
-                pos = lines[i].getPointAtLength(target);
-                if ((target === end || target === beginning) && pos.x !== mouse[0]) {
-                    break;
-                }
-                if (pos.x > mouse[0])      end = target;
-                else if (pos.x < mouse[0]) beginning = target;
-                else break; //position found
-              }
-              
-              d3.select(this).select('text')
-                .text(y.invert(pos.y).toFixed(2));
-                
-              return "translate(" + mouse[0] + "," + pos.y +")";
+          legend.append('text')
+            .attr('x', width -150)
+            .attr('y', function(d, i) {
+              return (i * 20) + 9;
+            })
+            .style("fill", "white")
+            .text(function(d) {
+              return d.name;
             });
-        });
-      });
-    
+
+          svg.append("g")
+            .attr("class", "x axis")
+            .attr("transform", "translate(0," + height + ")")
+            .style("fill", "white")
+            .call(xAxis);
+
+          svg.append("g")
+            .attr("class", "y axis")
+            .style("fill", "white")
+            .call(yAxis)
+            .append("text")
+            .attr("transform", "rotate(-90)")
+            .attr("y", 6)
+            .attr("dy", ".71em")
+            .style("text-anchor", "end")
+            .style("fill", "white")
+            .text("Value (SGD)");
+
+          var city = svg.selectAll(".city")
+            .data(cities)
+            .enter().append("g")
+            .attr("class", "city");
+
+          city.append("path")
+            .attr("class", "line")
+            .attr("d", function(d) {
+              return line(d.values);
+            })
+            .style("stroke", function(d) {
+              return color(d.name);
+            });
+
+          city.append("text")
+            .datum(function(d) {
+              return {
+                name: d.name,
+                value: d.values[d.values.length - 1]
+              };
+            })
+            .attr("transform", function(d) {
+              return "translate(" + x(d.value.date) + "," + y(d.value.temperature) + ")";
+            })
+            .attr("x", 3)
+            .attr("dy", ".35em")
+            .text(function(d) {
+              return ""; //name at end of line 
+            });
+
+          var mouseG = svg.append("g")
+            .attr("class", "mouse-over-effects");
+
+          mouseG.append("path") // this is the black vertical line to follow mouse
+            .attr("class", "mouse-line")
+            .style("stroke", "#D3D3D3")
+            .style("stroke-width", "1px")
+            .style("opacity", "0");
+            
+          var lines = document.getElementsByClassName('line');
+
+          var mousePerLine = mouseG.selectAll('.mouse-per-line')
+            .data(cities)
+            .enter()
+            .append("g")
+            .attr("class", "mouse-per-line");
+
+          mousePerLine.append("circle")
+            .attr("r", 7)
+            .style("stroke", function(d) {
+              return color(d.name);
+            })
+            .style("fill", function(d) {
+              return color(d.name);
+            })
+            .style("stroke-width", "1px")
+            .style("opacity", "0");
+
+          mousePerLine.append("rect")
+            .attr("width", 220)
+            .attr("height", 100)
+            .attr("transform", "translate(20,1)")
+            .style("fill", "#D3D3D3")
+            .style("stroke-width", "1px")
+            .style("opacity", "0");
+
+
+          mousePerLine.append("text")
+            .attr("transform", "translate(25,25)")
+
+
+          mouseG.append('svg:rect') // append a rect to catch mouse movements on canvas
+            .attr('width', width) // can't catch mouse events on a g element
+            .attr('height', height)
+            .attr('fill', 'none')
+            .attr('pointer-events', 'all')
+            .on('mouseout', function() { // on mouse out hide line, circles and text
+              d3.select(".mouse-line")
+                .style("opacity", "0");
+              d3.selectAll(".mouse-per-line circle")
+                .style("opacity", "0");
+              d3.selectAll(".mouse-per-line rect")
+                .style("opacity", "0");
+              d3.selectAll(".mouse-per-line text")
+                .style("opacity", "0");
+            })
+            .on('mouseover', function() { // on mouse in show line, circles and text
+              d3.select(".mouse-line")
+                .style("opacity", "1");
+              d3.selectAll(".mouse-per-line circle")
+                .style("opacity", "1");
+              d3.selectAll(".mouse-per-line rect")
+                .style("opacity", "0.95");
+              d3.selectAll(".mouse-per-line text")
+                .style("opacity", "1");
+            })
+            .on('mousemove', function() { // mouse moving over canvas
+              var mouse = d3.mouse(this);
+              d3.select(".mouse-line")
+                .attr("d", function() {
+                  var d = "M" + mouse[0] + "," + height;
+                  d += " " + mouse[0] + "," + 0;
+                  return d;
+                });
+
+              d3.selectAll(".mouse-per-line")
+                .attr("transform", function(d, i) {
+                  console.log(width/mouse[0])
+                  var xDate = x.invert(mouse[0]),
+                      bisect = d3.bisector(function(d) { return d.date; }).right;
+                      idx = bisect(d.values, xDate);
+                  
+                  var beginning = 0,
+                      end = lines[i].getTotalLength(),
+                      target = null;
+
+                  while (true){
+                    target = Math.floor((beginning + end) / 2);
+                    pos = lines[i].getPointAtLength(target);
+                    if ((target === end || target === beginning) && pos.x !== mouse[0]) {
+                        break;
+                    }
+                    if (pos.x > mouse[0])      end = target;
+                    else if (pos.x < mouse[0]) beginning = target;
+                    else break; //position found
+                  }
+                  
+                  d3.select(this).select('text')
+                    .text(xDate.getDate() + "-" + xDate.getMonth() + "-" + xDate.getFullYear()) // dc place
+                    .append('svg:tspan')
+                    .attr('x', 0)
+                    .attr('dy', 25)
+                    .text(function(d) { return d.name; })
+                    .append('svg:tspan')
+                    .attr('x', 0)
+                    .attr('dy', 30)
+                    .text("$" + y.invert(pos.y).toFixed(0) + " SGD");
+
+
+                    
+                  return "translate(" + mouse[0] + "," + pos.y +")";
+                });
+            });
+          });
+      }
       
   </script>
 </body>
