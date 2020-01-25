@@ -342,4 +342,4 @@ app.get('/', function(req, res) {
     res.sendFile(path.join(__dirname + '/view.html'));
 });
 
-app.listen(4000, () => console.log('Express GraphQL Server Now Running On localhost:4000/graphql'));
+app.listen(process.env.PORT || 4000, () => console.log('Express GraphQL Server Now Running On localhost:4000/graphql'));
