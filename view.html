@@ -77,6 +77,44 @@
     /* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
     .show {display:block;}
 
+    /* Style the tab */
+    .tab {
+      
+      background-color: #f1f1f1;
+    }
+
+    /* Style the buttons that are used to open the tab content */
+    .tab button {
+      background-color: inherit;
+      float: left;
+      border: none;
+      outline: none;
+      cursor: pointer;
+      padding: 14px 16px;
+      transition: 0.3s;
+    }
+
+    /* Change background color of buttons on hover */
+    .tab button:hover {
+      background-color: #ddd;
+    }
+
+    /* Create an active/current tablink class */
+    .tab button.active {
+      background-color: #ccc;
+    }
+
+    /* Style the tab content */
+    .tabcontent {
+      display: none;
+      padding: 6px 12px;
+      border-top: none;
+    }
+    .GraphTitle{
+      overflow: hidden;
+      width: 100%;
+    }
+
 
     
   </style>
@@ -90,13 +128,25 @@
       <a href="#" onclick= "compare('60% VTSMX (Stock) + 40% VBMFX (Bond)')">60% VTSMX (Stock) + 40% VBMFX (Bond)</a>
     </div>
   </div>
-  <h2 style="color:white;">Portfolio value based on gross returns</h2>
+
+  <!-- Tab links -->
+  <div class="tab">
+    <button class="tablinks" onclick="openCity(event, '3 Month')">3 Month</button>
+    <button class="tablinks" onclick="openCity(event, '6 Month')">6 Month</button>
+    <button class="tablinks" onclick="openCity(event, 'Max')">Max</button>
+  </div>
+
+  
+
+  <div class = "GraphTitle">
+    <h2 style="color:white;">Portfolio value based on gross returns</h2>
+  </div>
 </head>
 
 <body>
   <script>
     
-    
+      let state = {"benchmark":"", "timeframe":"Max", "currency":"SGD","data":[]}
       /* When the user clicks on the button,
       toggle between hiding and showing the dropdown content */
       function myFunction() {
@@ -117,7 +167,13 @@
         }
       }
 
+      
+
       function compare(benchmark){
+        state["benchmark"] = benchmark
+        console.log("Plot graph: " + state["timeframe"] + " timeframe for " + state["benchmark"] + ", with currency" + state["currency"] )
+
+
         d3.select("svg").remove();
         var margin = {
           top: 20,
@@ -170,7 +226,7 @@
           },
           "data": JSON.stringify({
           query: "query getOneDatapoint($dataid: String, $dataid2: String) {\r\n    datapoints(portfolio: $dataid, benchmark: $dataid2 ) {\r\n    \tvalue\r\n    \tportfolio\r\n    \tid\r\n    \tperiod\r\n    }\r\n}",
-          variables: {"dataid":"Stashaway Risk Index 14%","dataid2":benchmark} // "Stashaway Risk Index 14%"
+          variables: {"dataid":"Stashaway Risk Index 14%","dataid2":state["benchmark"]} // "Stashaway Risk Index 14%"
         })
         };
 
@@ -193,6 +249,31 @@
             console.log (datamap)//[d.period])
 
           });
+
+          switch(state["timeframe"]) {
+            case "3 Month":
+              var months = 3
+              var tempDataMap = {}
+              var key = ""
+              for (i = months; i > 0; i--){
+                key = Object.keys(datamap)[Object.keys(datamap).length - i]
+                tempDataMap[key] = datamap[key]
+              }
+              datamap = tempDataMap;
+              break;
+            case "6 Month":
+              var months = 6
+              var tempDataMap = {}
+              var key = ""
+              for (i = months; i > 0; i--){
+                key = Object.keys(datamap)[Object.keys(datamap).length - i]
+                tempDataMap[key] = datamap[key]
+              }
+              datamap = tempDataMap;
+              break;
+            default:
+              datamap = datamap;
+          }
 
           //transform into data suitable for this d3 graph
           //data = []
@@ -429,6 +510,23 @@
                 });
             });
           });
+      }
+
+      function openCity(evt, cityName) {
+        console.log("Switch timeframe: " + state["timeframe"] + " for " + state["benchmark"] + ", with currency" + state["currency"] )
+        // Declare all variables
+        var i, tabcontent, tablinks;
+
+        // Get all elements with class="tablinks" and remove the class "active"
+        tablinks = document.getElementsByClassName("tablinks");
+        for (i = 0; i < tablinks.length; i++) {
+          tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+
+        // Show the current tab, and add an "active" class to the button that opened the tab
+        evt.currentTarget.className += " active";
+        state["timeframe"] = cityName;
+        compare(state["benchmark"])
       }
       
   </script>
