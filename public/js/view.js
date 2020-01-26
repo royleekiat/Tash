@@ -367,7 +367,7 @@ function compare(benchmark){
               .attr('dy', 30)
               .style("fill", "#34A7C1")
               .style("font-size", "22px")
-              .text("$" + y.invert(pos.y).toFixed(0) + " " + state["currency"]);
+              .text("$" + numberWithCommas(y.invert(pos.y).toFixed(0)) + " " + state["currency"]);
 
 
               
@@ -403,4 +403,8 @@ function switchCurrency(){
     state["currency"] = "SGD"
   }
   compare(state["benchmark"])
+}
+
+function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
