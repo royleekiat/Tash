@@ -10,7 +10,9 @@
 </head>
 
     <header>
+    <!--Title -->
     <h1 style="color:#34A7C1;font-size: 30px;">Portfolio Benchmark</h1>
+    <!--Benchmark picker -->
     <div class="dropdown">
       <button  class="dropbtn" style="background-color: #eaeaea; color: #34A7C1;cursor: default;">Stashaway Risk Index 14% portfolio</button>
       <button  class="dropbtn" style="background-color: #eaeaea;font-weight: bold; cursor: default;">vs</button>
@@ -22,16 +24,16 @@
       </div>
     </div>
 
-    <br>
+
     </header>
     <!-- Tab links -->
     <div class="tab">
-      <button class="tablinks" onclick="openCity(event, '3 Month')">3 Month</button>
-      <button class="tablinks" onclick="openCity(event, '6 Month')">6 Month</button>
-      <button class="tablinks active" onclick="openCity(event, 'Max')">Max</button>
+      <button class="tablinks" onclick="openTime(event, '3 Month')">3 Month</button>
+      <button class="tablinks" onclick="openTime(event, '6 Month')">6 Month</button>
+      <button class="tablinks active" onclick="openTime(event, 'Max')">Max</button>
     </div>
 
-    
+    <!-- Currency picker -->
     <div class="onoffswitch">
       <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch" onclick="switchCurrency()" checked>
       <label class="onoffswitch-label" for="myonoffswitch">
@@ -39,16 +41,14 @@
           <span class="onoffswitch-switch"></span>
       </label>
     </div>
-</br>
-    
-  <body>
-    <div class="GraphTitle"></div>
-  <div id="graf"  ></div>
-  <!--<div class = "GraphTitle">
-    <h2 style="color:white;">Portfolio value based on gross returns</h2>
-  </div>-->
 
-</body>
+    
+    <body>
+        <div class="GraphTitle"></div>
+        <!--where the d3 svg is rendered for comparison of portfolio -->
+        <div id="graf"></div>
+
+    </body>
 
   <script src="/static/js/view.js"></script>
 

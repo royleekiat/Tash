@@ -3,7 +3,7 @@ var express_graphql = require('express-graphql');
 var { buildSchema } = require('graphql');
 var path = require('path');
 
-
+//schema for GraphQL
 var schema = buildSchema(`
     type Query {
         datapoint(id: Int!): Datapoint
@@ -17,7 +17,7 @@ var schema = buildSchema(`
     }
 `);
 
-
+//simulate database extract
 var datapointsList = [
     {
         id: 1,
@@ -311,12 +311,16 @@ var datapointsList = [
         portfolio: '60% VTSMX (Stock) + 40% VBMFX (Bond)',
     }
 ]
+
+// functions determining how GraphQL retrieves data
+// 1 Datapoint
 var getDatapoint = function(args) { 
     var id = args.id;
     return datapointsList.filter(datapoint => {
         return datapoint.id == id;
     })[0];
 }
+//All Datapoints according to portfolio and benchmark provided
 var getDatapoints = function(args) {
     if (args.portfolio) {
         var portfolio = args.portfolio;
@@ -326,25 +330,30 @@ var getDatapoints = function(args) {
         return datapointsList;
     }
 }
+
+//map to functions above
 var root = {
     datapoint: getDatapoint,
     datapoints: getDatapoints
 };
+
 // Create an express server and a GraphQL endpoint
 var app = express();
 
+//serve js and css files
 app.use('/static', express.static(path.join(__dirname, 'public')))
 
+//expose GraphQL api
 app.use('/graphql', express_graphql({
     schema: schema,
     rootValue: root,
     graphiql: true //process.env.NODE_ENV === 'development' //true
 }));
 
-
-
+//Homepage
 app.get('/', function(req, res) {
     res.sendFile(path.join(__dirname + '/view.html'));
 });
 
-app.listen(process.env.PORT || 4000, () => console.log('Express GraphQL Server Now Running On localhost:4000/graphql'));
+//Start server
+app.listen(process.env.PORT || 4000, () => console.log('Express GraphQL Server Now Running On localhost:4000/graphql or ___.com/graphql'));
