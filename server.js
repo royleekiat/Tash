@@ -332,6 +332,9 @@ var root = {
 };
 // Create an express server and a GraphQL endpoint
 var app = express();
+
+app.use('/static', express.static(path.join(__dirname, 'public')))
+
 app.use('/graphql', express_graphql({
     schema: schema,
     rootValue: root,
