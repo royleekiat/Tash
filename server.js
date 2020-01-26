@@ -338,6 +338,8 @@ app.use('/graphql', express_graphql({
     graphiql: true //process.env.NODE_ENV === 'development' //true
 }));
 
+
+
 app.get('/', function(req, res) {
     res.sendFile(path.join(__dirname + '/view.html'));
 });

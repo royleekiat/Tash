@@ -5,21 +5,25 @@
   <script data-require="d3@3.5.3" data-semver="3.5.3" src="//cdnjs.cloudflare.com/ajax/libs/d3/3.5.3/d3.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <style>
+
+
+
     body {
       font: 10px sans-serif;
-      background-color: #001630;
+      background-color: #000d1c;
       position: relative;
+      margin: :0px;
     }
     
     .axis path,
     .axis line {
       fill: none;
-      stroke: white;
+      stroke: #eaeaea;
       shape-rendering: crispEdges;
     }
     
     .x.axis path {
-      stroke: white;
+      stroke: #eaeaea;
     }
     
     .line {
@@ -29,15 +33,14 @@
     }
     /* Dropdown Button */
     .dropbtn {
-      background-color: #3498DB;
-      color: white;
+      background-color: #34A7C1;
+      color: black;
       padding: 16px;
       font-size: 16px;
       border: none;
       cursor: pointer;
-      position: absolute;
-      top: -70px;
-      left: 900px;
+      position: relative;
+      float:left;
     }
 
     /* Dropdown button on hover & focus */
@@ -55,10 +58,10 @@
     .dropdown-content {
       display: none;
       position: absolute;
-      top: -20px;
-      left: 900px;
       background-color: #f1f1f1;
-      min-width: 160px;
+      left:337px;
+      top: 52px;
+      min-width: 303px;
       box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
       z-index: 1;
     }
@@ -80,18 +83,24 @@
     /* Style the tab */
     .tab {
       
-      background-color: #f1f1f1;
+      position: relative;
+      background-color: #eaeaea;
+
     }
 
     /* Style the buttons that are used to open the tab content */
     .tab button {
       background-color: inherit;
-      float: left;
+      float:left;
       border: none;
+      margin-top:20px;
+      margin-right:8px;
       outline: none;
       cursor: pointer;
-      padding: 14px 16px;
+      padding: 10px 12px;
       transition: 0.3s;
+      display:block;
+      border-radius: 10px;
     }
 
     /* Change background color of buttons on hover */
@@ -101,7 +110,7 @@
 
     /* Create an active/current tablink class */
     .tab button.active {
-      background-color: #ccc;
+      background-color: #34A7C1;
     }
 
     /* Style the tab content */
@@ -113,37 +122,103 @@
     .GraphTitle{
       overflow: hidden;
       width: 100%;
+      margin-top: 10px;
     }
+
+    .onoffswitch {
+    position: absolute; width: 90px; 
+    margin-top:25px;
+    left: 850px;
+    -webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;
+    }
+    .onoffswitch-checkbox {
+        display: none;
+    }
+    .onoffswitch-label {
+        display: block; overflow: hidden; cursor: pointer; border-radius: 10px;
+        border: 1px solid #999999; 
+    }
+    .onoffswitch-inner {
+        display: block; width: 200%; margin-left: -100%;
+        transition: margin 0.3s ease-in 0s;
+    }
+    .onoffswitch-inner:before, .onoffswitch-inner:after {
+        display: block; float: left; width: 50%; height: 30px; padding: 0; line-height: 30px;
+        font-size: 14px; color: white; font-family: Trebuchet, Arial, sans-serif; 
+        box-sizing: border-box;
+    }
+    .onoffswitch-inner:before {
+        content: "SGD";
+        padding-left: 10px;
+        background-color: #34A7C1; color: #FFFFFF;
+    }
+    .onoffswitch-inner:after {
+        content: "USD";
+        padding-right: 10px;
+        background-color: #EEEEEE; color: #999999;
+        text-align: right;
+    }
+    .onoffswitch-switch {
+        display: block; width: 18px; margin: 6px;
+        background: #FFFFFF;
+        position: absolute; top: 0; bottom: 0;
+        right: 56px;
+        border: 1px solid #999999; border-radius: 20px;
+        transition: all 0.3s ease-in 0s; 
+    }
+    .onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner {
+        margin-left: 0;
+    }
+    .onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch {
+        right: 0px; 
+    }
+
+    
 
 
     
   </style>
-  <h1 style="color:white;">Portfolio Benchmark</h1>
-  <h2 style="color:grey;">Stashaway Risk Index 14% portfolio</h2>
-  <div class="dropdown">
-    <button onclick="myFunction()" class="dropbtn">Benchmark</button>
-    <div id="myDropdown" class="dropdown-content">
-      <a href="#" onclick= "compare('20% VTSMX (Stock) + 80% VBMFX (Bond)')">20% VTSMX (Stock) + 80% VBMFX (Bond)</a>
-      <a href="#" onclick= "compare('40% VTSMX (Stock) + 60% VBMFX (Bond)')">40% VTSMX (Stock) + 60% VBMFX (Bond)</a>
-      <a href="#" onclick= "compare('60% VTSMX (Stock) + 40% VBMFX (Bond)')">60% VTSMX (Stock) + 40% VBMFX (Bond)</a>
-    </div>
-  </div>
-
-  <!-- Tab links -->
-  <div class="tab">
-    <button class="tablinks" onclick="openCity(event, '3 Month')">3 Month</button>
-    <button class="tablinks" onclick="openCity(event, '6 Month')">6 Month</button>
-    <button class="tablinks" onclick="openCity(event, 'Max')">Max</button>
-  </div>
-
   
-
-  <div class = "GraphTitle">
-    <h2 style="color:white;">Portfolio value based on gross returns</h2>
-  </div>
 </head>
 
-<body>
+    <header>
+    <h1 style="color:#34A7C1;font-size: 30px;">Portfolio Benchmark</h1>
+    <div class="dropdown">
+      <button  class="dropbtn" style="background-color: #eaeaea; color: #34A7C1;cursor: default;">Stashaway Risk Index 14% portfolio</button>
+      <button  class="dropbtn" style="background-color: #eaeaea;font-weight: bold; cursor: default;">vs</button>
+      <button onclick="myFunction()" class="dropbtn" style=" color: white;">Select Benchmark to compare against</button>
+      <div id="myDropdown" class="dropdown-content">
+        <a href="#" onclick= "compare('20% VTSMX (Stock) + 80% VBMFX (Bond)')">20% VTSMX (Stock) + 80% VBMFX (Bond)</a>
+        <a href="#" onclick= "compare('40% VTSMX (Stock) + 60% VBMFX (Bond)')">40% VTSMX (Stock) + 60% VBMFX (Bond)</a>
+        <a href="#" onclick= "compare('60% VTSMX (Stock) + 40% VBMFX (Bond)')">60% VTSMX (Stock) + 40% VBMFX (Bond)</a>
+      </div>
+    </div>
+
+    <br>
+    </header>
+    <!-- Tab links -->
+    <div class="tab">
+      <button class="tablinks" onclick="openCity(event, '3 Month')">3 Month</button>
+      <button class="tablinks" onclick="openCity(event, '6 Month')">6 Month</button>
+      <button class="tablinks active" onclick="openCity(event, 'Max')">Max</button>
+    </div>
+
+    
+    <div class="onoffswitch">
+      <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch" onclick="switchCurrency()" checked>
+      <label class="onoffswitch-label" for="myonoffswitch">
+          <span class="onoffswitch-inner"></span>
+          <span class="onoffswitch-switch"></span>
+      </label>
+    </div>
+</br>
+    
+  <body>
+    <div class="GraphTitle"></div>
+  <div id="graf"  ></div>
+  <!--<div class = "GraphTitle">
+    <h2 style="color:white;">Portfolio value based on gross returns</h2>
+  </div>-->
   <script>
     
       let state = {"benchmark":"", "timeframe":"Max", "currency":"SGD","data":[]}
@@ -211,9 +286,12 @@
             return y(d.temperature);
           });
 
-        var svg = d3.select("body").append("svg")
+        var svg = d3.select("#graf").append("svg")
           .attr("width", width + margin.left + margin.right)
           .attr("height", height + margin.top + margin.bottom)
+          .style("margin-top",margin.top)
+          .style("background-color","#001630")
+          .style("border-radius", "20px")
           .append("g")
           .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
@@ -239,11 +317,15 @@
 
           //sort by date
           datapointsList.forEach(function(d) {
+            var rate = 1;
+            if(state["currency"] === "USD"){
+              rate = 0.74 //rate can be called via API
+            }
             if (d.period in datamap){
-              datamap[d.period][d.portfolio] = d.value
+              datamap[d.period][d.portfolio] = d.value*rate
             }
             else{ 
-              datamap[d.period] = {"date":parseDate(d.period), [d.portfolio]: d.value}
+              datamap[d.period] = {"date":parseDate(d.period), [d.portfolio]: d.value*rate}
             }
 
             console.log (datamap)//[d.period])
@@ -274,6 +356,8 @@
             default:
               datamap = datamap;
           }
+
+
 
           //transform into data suitable for this d3 graph
           //data = []
@@ -328,7 +412,7 @@
             .attr('class', 'legend');
 
           legend.append('rect')
-            .attr('x', width - 162)
+            .attr('x', width - 215)
             .attr('y', function(d, i) {
               return i * 20;
             })
@@ -339,11 +423,11 @@
             });
 
           legend.append('text')
-            .attr('x', width -150)
+            .attr('x', width -195)
             .attr('y', function(d, i) {
               return (i * 20) + 9;
             })
-            .style("fill", "white")
+            .style("fill", "#eaeaea")
             .text(function(d) {
               return d.name;
             });
@@ -351,20 +435,20 @@
           svg.append("g")
             .attr("class", "x axis")
             .attr("transform", "translate(0," + height + ")")
-            .style("fill", "white")
+            .style("fill", "#eaeaea")
             .call(xAxis);
 
           svg.append("g")
             .attr("class", "y axis")
-            .style("fill", "white")
+            .style("fill", "#eaeaea")
             .call(yAxis)
             .append("text")
             .attr("transform", "rotate(-90)")
             .attr("y", 6)
             .attr("dy", ".71em")
             .style("text-anchor", "end")
-            .style("fill", "white")
-            .text("Value (SGD)");
+            .style("fill", "#eaeaea")
+            .text("Value (" + state["currency"] + ")");
 
           var city = svg.selectAll(".city")
             .data(cities)
@@ -425,7 +509,9 @@
             .style("opacity", "0");
 
           mousePerLine.append("rect")
-            .attr("width", 220)
+            .attr("rx", 6)
+            .attr("ry", 6)
+            .attr("width", 240)
             .attr("height", 100)
             .attr("transform", "translate(20,1)")
             .style("fill", "#D3D3D3")
@@ -494,15 +580,20 @@
                   }
                   
                   d3.select(this).select('text')
-                    .text(xDate.getDate() + "-" + xDate.getMonth() + "-" + xDate.getFullYear()) // dc place
+                    .style("font-size","10px")
+                    .text(xDate.getDate() + "-" + (xDate.getMonth()+1) + "-" + xDate.getFullYear())
                     .append('svg:tspan')
+                    .style("font-weight","bold")
                     .attr('x', 0)
-                    .attr('dy', 25)
+                    .attr('dy', 30)
+                    .style("font-size","11.5px")
                     .text(function(d) { return d.name; })
                     .append('svg:tspan')
                     .attr('x', 0)
                     .attr('dy', 30)
-                    .text("$" + y.invert(pos.y).toFixed(0) + " SGD");
+                    .style("fill", "#34A7C1")
+                    .style("font-size", "22px")
+                    .text("$" + y.invert(pos.y).toFixed(0) + " " + state["currency"]);
 
 
                     
@@ -526,6 +617,15 @@
         // Show the current tab, and add an "active" class to the button that opened the tab
         evt.currentTarget.className += " active";
         state["timeframe"] = cityName;
+        compare(state["benchmark"])
+      }
+
+      function switchCurrency(){
+        if(state["currency"] === "SGD"){
+          state["currency"] = "USD"
+        }else{
+          state["currency"] = "SGD"
+        }
         compare(state["benchmark"])
       }
       
